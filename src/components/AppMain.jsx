@@ -50,51 +50,65 @@ export default function AppMain() {
     }
     return (
         <>
-            <div className="container">
-                <div className="row">
-                    <div className="col-12">
-                        {tasks.map(task => {
-                            return (
-                                <div className="card mx-auto d-flex flex-row justify-content-between align-items-center my-2 px-5" key={task.id}>
-                                    <div className="card-top py-2 px-2">
-                                        <h3><b>Task: </b>{task.title}</h3>
+            <div className="container py-4">
+                <div className="row row-cols-1 row-cols-md-2">
+                    {tasks.map(task => {
+                        return (
+                            <div className="col">
+                                <div className="card mx-auto my-2 p-3" key={task.id} style={{ maxWidth: '900px' }}>
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <p className="m-0"><strong>Task:</strong> {task.title}</p>
+                                        <button className="btn btn-outline-warning btn-sm">
+                                            <i className="bi bi-pencil-square"></i>
+                                        </button>
                                     </div>
-                                    <div className="description pt-3 px-2">
-                                        <p><b>Descrizione Task: </b>{task.description}</p>
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <p className="m-0"><strong>Descrizione:</strong> {task.description}</p>
+                                        <button className="btn btn-outline-warning btn-sm">
+                                            <i className="bi bi-pencil-square"></i>
+                                        </button>
                                     </div>
-                                    <div className="due_date pt-3 px-2">
-                                        <p><b>Tempo Massimo per utlimare la task: </b>
-                                            {formatItalian(task.due_date)}</p>
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <p className="m-0">
+                                            <strong>Scadenza:</strong> {formatItalian(task.due_date)}
+                                        </p>
+                                        <button className="btn btn-outline-warning btn-sm">
+                                            <i className="bi bi-pencil-square"></i>
+                                        </button>
+                                    </div>
+                                    <div className="text-end">
+                                        <button className="btn btn-outline-danger btn-sm">
+                                            <i className="bi bi-trash"></i>
+                                        </button>
                                     </div>
                                 </div>
-                            )
-                        })
-                        }
-                    </div>
-                    <div className="col">
-                        <form onSubmit={handleSubmitTask} className="d-flex justify-content-between gap-2">
-                            <input
-                                className=" w-25 text-center p-3"
-                                type="text"
-                                value={title}
-                                placeholder="Inserisci una nuova task..."
-                                onChange={e => setTitle(e.target.value)} />
-                            <input
-                                className=" w-50 text-center p-3"
-                                type="text"
-                                value={description}
-                                placeholder="Inserisci una descrizione della task..."
-                                onChange={e => setDescription(e.target.value)} />
-                            <input
-                                className=" text-center p-3"
-                                type="date"
-                                value={dueDate}
-                                placeholder="Inserisci una data di scadenza"
-                                onChange={e => setDueDate(e.target.value)} />
-                            <button className="btn btn-outline-dark"><i className="bi bi-send pe-2"></i>Invia</button>
-                        </form>
-                    </div>
+                            </div>
+                        );
+                    })}
                 </div>
+                <section className="sticky-bottom bg-white pt-3 pb-4 border-top shadow-sm">
+                    <form onSubmit={handleSubmitTask} className="d-flex justify-content-between gap-2">
+                        <input
+                            className=" w-25 text-center p-3"
+                            type="text"
+                            value={title}
+                            placeholder="Inserisci una nuova task..."
+                            onChange={e => setTitle(e.target.value)} />
+                        <input
+                            className=" w-50 text-center p-3"
+                            type="text"
+                            value={description}
+                            placeholder="Inserisci una descrizione della task..."
+                            onChange={e => setDescription(e.target.value)} />
+                        <input
+                            className=" text-center p-3"
+                            type="date"
+                            value={dueDate}
+                            placeholder="Inserisci una data di scadenza"
+                            onChange={e => setDueDate(e.target.value)} />
+                        <button className="btn btn-outline-dark"><i className="bi bi-send pe-2"></i>Invia</button>
+                    </form>
+                </section>
             </div>
         </>
     )
