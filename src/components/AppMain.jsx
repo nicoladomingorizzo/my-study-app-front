@@ -7,6 +7,7 @@ export default function AppMain() {
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [editingTaskId, setEditingTaskId] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
     const apiUrl = `http://127.0.0.1:3030/api/tasks`;
 
     useEffect(() => {
@@ -49,9 +50,10 @@ export default function AppMain() {
                 setTitle('');
                 setDescription('');
                 setDueDate('');
+                setSuccessMessage('Task aggiunta con successo!');
             })
             .catch(error => console.error('Errore:', error));
-    }
+    };
 
     function handleSubmitUpdate(e) {
         e.preventDefault();
@@ -78,9 +80,11 @@ export default function AppMain() {
                 setTitle('');
                 setDescription('');
                 setDueDate('');
+                setEditingTaskId(null);
+                setSuccessMessage('Task modificata con successo!');
             })
             .catch(error => console.error('Errore:', error));
-    }
+    };
 
     function handleRemoveClick(id) {
         fetch(`http://127.0.0.1:3030/api/tasks/${id}`, {
@@ -95,18 +99,33 @@ export default function AppMain() {
                 }
             })
             .catch(err => console.error('Errore DELETE:', err));
-    }
+    };
 
     function handleUpdateTask(task) {
         setEditingTaskId(task.id);
         setTitle(task.title);
         setDescription(task.description);
         setDueDate(task.due_date?.split("T")[0] || ''); // Rimuove l'ora, lascia solo yyyy-mm-dd
-    }
+    };
+
+    useEffect(() => {
+        if (successMessage) {
+            const timeout = setTimeout(() => {
+                setSuccessMessage('');
+            }, 3000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [successMessage]);
 
     return (
         <>
             <div className="container py-4">
+                {successMessage && (
+                    <div className="alert alert-success mt-3 w-75 mx-auto" role="alert">
+                        {successMessage}
+                    </div>
+                )}
                 <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                     {tasks.length > 0 ? (tasks.map(task => {
                         return (
