@@ -6,6 +6,7 @@ export default function AppMain() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState('');
+    const [editingTaskId, setEditingTaskId] = useState(null);
     const apiUrl = `http://127.0.0.1:3030/api/tasks`;
 
     useEffect(() => {
@@ -27,7 +28,7 @@ export default function AppMain() {
     };
 
 
-    function handleSubmitTask(e) {
+    function handleSubmitCreate(e) {
         e.preventDefault();
 
         if (!title || !description || !dueDate) {
@@ -52,6 +53,35 @@ export default function AppMain() {
             .catch(error => console.error('Errore:', error));
     }
 
+    function handleSubmitUpdate(e) {
+        e.preventDefault();
+
+        if (!title || !description || !dueDate) {
+            alert('Per favore compila tutti i campi');
+            return;
+        }
+
+        fetch(`${apiUrl}/${editingTaskId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ title, description, due_date: dueDate })
+        })
+            .then(res => res.json())
+            .then(() => {
+                setTasks(prev => prev.map(task =>
+                    task.id === editingTaskId
+                        ? { ...task, title, description, due_date: dueDate }
+                        : task
+                ))
+                setTitle('');
+                setDescription('');
+                setDueDate('');
+            })
+            .catch(error => console.error('Errore:', error));
+    }
+
     function handleRemoveClick(id) {
         fetch(`http://127.0.0.1:3030/api/tasks/${id}`, {
             method: 'DELETE'
@@ -67,24 +97,30 @@ export default function AppMain() {
             .catch(err => console.error('Errore DELETE:', err));
     }
 
+    function handleUpdateTask(task) {
+        setEditingTaskId(task.id);
+        setTitle(task.title);
+        setDescription(task.description);
+        setDueDate(task.due_date?.split("T")[0] || ''); // Rimuove l'ora, lascia solo yyyy-mm-dd
+    }
 
     return (
         <>
             <div className="container py-4">
                 <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-                    {tasks.map(task => {
+                    {tasks.length > 0 ? (tasks.map(task => {
                         return (
                             <div className="col" key={task.id}>
                                 <div className="card mx-auto my-2 p-3" style={{ maxWidth: '900px' }}>
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <p className="m-0"><strong>Task:</strong>{task.title}</p>
-                                        <button className="btn btn-outline-warning btn-sm">
+                                        <button className="btn btn-outline-warning btn-sm" onClick={() => handleUpdateTask(task)}>
                                             <i className="bi bi-pencil-square"></i>
                                         </button>
                                     </div>
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <p className="m-0"><strong>Descrizione:</strong> {task.description}</p>
-                                        <button className="btn btn-outline-warning btn-sm">
+                                        <button className="btn btn-outline-warning btn-sm" onClick={() => handleUpdateTask(task)}>
                                             <i className="bi bi-pencil-square"></i>
                                         </button>
                                     </div>
@@ -92,7 +128,7 @@ export default function AppMain() {
                                         <p className="m-0">
                                             <strong>Scadenza:</strong> {formatItalian(task.due_date)}
                                         </p>
-                                        <button className="btn btn-outline-warning btn-sm">
+                                        <button className="btn btn-outline-warning btn-sm" onClick={() => handleUpdateTask(task)}>
                                             <i className="bi bi-pencil-square"></i>
                                         </button>
                                     </div>
@@ -104,10 +140,15 @@ export default function AppMain() {
                                 </div>
                             </div>
                         );
-                    })}
+                    })) : (
+                        <h3 className="my-5 mx-auto text-center">
+                            Nessuna Task ancora creata, creane una.
+                        </h3>
+                    )
+                    }
                 </div>
                 <section className="sticky-bottom bg-white pt-3 pb-4 border-top shadow-sm">
-                    <form onSubmit={handleSubmitTask} className="d-flex justify-content-between gap-2">
+                    <form onSubmit={editingTaskId ? handleSubmitUpdate : handleSubmitCreate} className="d-flex justify-content-between gap-2">
                         <input
                             className=" w-25 text-center p-3"
                             type="text"
@@ -126,7 +167,10 @@ export default function AppMain() {
                             value={dueDate}
                             placeholder="Inserisci una data di scadenza"
                             onChange={e => setDueDate(e.target.value)} />
-                        <button className="btn btn-outline-dark"><i className="bi bi-send pe-2"></i>Invia</button>
+                        <button className="btn btn-outline-dark">
+                            <i className="bi bi-send pe-2"></i>
+                            {editingTaskId ? 'Aggiorna' : 'Invia'}
+                        </button>
                     </form>
                 </section>
             </div>
