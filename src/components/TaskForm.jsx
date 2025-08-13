@@ -18,7 +18,12 @@ export default function TaskForm({ setTasks, apiUrl, setSuccessMessage, setEditi
                             type="text"
                             value={description}
                             placeholder="Inserisci una descrizione della task..."
-                            onChange={e => setDescription(e.target.value)} />
+                            onChange={e => setDescription(e.target.value)}
+                            maxLength={50} />
+                        <small className="form-text text-muted ps-1">
+                            {description.length}/50 caratteri
+                        </small>
+
                     </div>
                     <div className="col-12 col-md-3">
                         <input
@@ -26,6 +31,7 @@ export default function TaskForm({ setTasks, apiUrl, setSuccessMessage, setEditi
                             type="date"
                             value={dueDate}
                             placeholder="Inserisci una data di scadenza"
+                            min={new Date().toISOString().split('T')[0]}
                             onChange={e => setDueDate(e.target.value)} />
                     </div>
                     <div className="col-12 col-md-2 d-grid">
