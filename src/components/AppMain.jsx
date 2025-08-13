@@ -13,6 +13,8 @@ export default function AppMain() {
     const [dueDate, setDueDate] = useState('');
     const apiUrl = `http://127.0.0.1:3030/api/tasks`;
 
+    const completedTasksList = tasks.filter(task => task.completed);
+
     useEffect(() => {
         fetch(apiUrl)
             .then(res => res.json())
@@ -46,13 +48,51 @@ export default function AppMain() {
             .catch(err => console.error('Errore DELETE:', err));
     };
 
+    function handleUnsuccessClick(id) {
+        fetch(`${apiUrl}/${id}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ completed: false })
+        })
+            .then(res => res.json())
+            .then(() => {
+                setTasks(prev =>
+                    prev.map(task =>
+                        task.id === id ? { ...task, completed: false } : task
+                    )
+                );
+                setSuccessMessage('Task riportata allo stato di non completata!');
+            })
+            .catch(err => console.error('Errore nel completamento della task:', err));
+    }
+    function handleSuccessClick(id) {
+        fetch(`${apiUrl}/${id}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ completed: true })
+        })
+            .then(res => res.json())
+            .then(() => {
+                setTasks(prev =>
+                    prev.map(task =>
+                        task.id === id ? { ...task, completed: true } : task
+                    )
+                );
+                setSuccessMessage('Task completata con successo!');
+            })
+            .catch(err => console.error('Errore nel completamento della task:', err));
+    }
+
     function handleUpdateTask(task) {
         setEditingTaskId(task.id);
         setTitle(task.title);
         setDescription(task.description);
         setDueDate(task.due_date?.split("T")[0] || ''); // Rimuove l'ora, lascia solo yyyy-mm-dd
     };
-
 
     function handleSubmitCreate(e) {
         e.preventDefault();
@@ -126,10 +166,39 @@ export default function AppMain() {
             <div className="container py-4">
                 <SuccessMessage successMessage={successMessage} />
                 <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-                    <TaskCard handleRemoveClick={handleRemoveClick} handleUpdateTask={handleUpdateTask} formatItalian={formatItalian} tasks={tasks} />
+                    <TaskCard handleRemoveClick={handleRemoveClick} handleUpdateTask={handleUpdateTask} formatItalian={formatItalian} tasks={tasks.filter(task => !task.completed)} handleSuccessClick={handleSuccessClick} />
                 </div>
             </div>
             <TaskForm apiUrl={apiUrl} setTasks={setTasks} setSuccessMessage={setSuccessMessage} setEditingTaskId={setEditingTaskId} editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} />
+            <section className="completed container">
+                <h2 className="text-center mt-5 mb-5">Task Completate</h2>
+                <ul className="list-group list-group-flush list-unstyled">
+                    {
+                        completedTasksList.length > 0 ?
+                            (
+                                completedTasksList.map(completeTask => {
+                                    return (
+                                        <li key={completeTask.id} className="d-flex justify-content-between align-items-start">
+                                            <p><b>Task Completata: </b>{completeTask.title}</p>
+                                            <p><b>Descriszione Task: </b>{completeTask.description}</p>
+                                            <div className="buttons">
+                                                <button className="btn btn-outline-warning btn-sm me-1" onClick={() => handleUnsuccessClick(completeTask.id)}>
+                                                    <i className="bi bi-check2-square"></i>
+                                                </button>
+                                                <button className="btn btn-outline-danger btn-sm ms-1" onClick={() => handleRemoveClick(completeTask.id)}>
+                                                    <i className="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    )
+                                })
+                            ) : (
+                                <li>
+                                    <p className="text-center fs-4">Nessuna task ancora completata</p>
+                                </li>
+                            )}
+                </ul>
+            </section>
         </>
     )
 

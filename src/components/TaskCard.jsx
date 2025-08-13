@@ -1,4 +1,4 @@
-export default function TaskCard({ handleRemoveClick, handleUpdateTask, formatItalian, tasks }) {
+export default function TaskCard({ handleRemoveClick, handleSuccessClick, handleUpdateTask, formatItalian, tasks }) {
 
     return (
         <>
@@ -27,7 +27,10 @@ export default function TaskCard({ handleRemoveClick, handleUpdateTask, formatIt
                                         <i className="bi bi-pencil-square"></i>
                                     </button>
                                 </div>
-                                <div className="text-end">
+                                <div className="d-flex justify-content-between">
+                                    <button className="btn btn-outline-success btn-sm" onClick={() => handleSuccessClick(task.id)}>
+                                        <i className="bi bi-check2-square"></i>
+                                    </button>
                                     <button className="btn btn-outline-danger btn-sm" onClick={() => handleRemoveClick(task.id)}>
                                         <i className="bi bi-trash"></i>
                                     </button>
