@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import TaskForm from "./TaskForm";
 import TaskCard from "./TaskCard";
 import SuccessMessage from "./SuccessMessage";
+import CompletedTasks from "./CompletedTasks";
 
 export default function AppMain() {
 
@@ -170,35 +171,7 @@ export default function AppMain() {
                 </div>
             </div>
             <TaskForm apiUrl={apiUrl} setTasks={setTasks} setSuccessMessage={setSuccessMessage} setEditingTaskId={setEditingTaskId} editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} />
-            <section className="completed container">
-                <h2 className="text-center mt-5 mb-5">Task Completate</h2>
-                <ul className="list-group list-group-flush list-unstyled">
-                    {
-                        completedTasksList.length > 0 ?
-                            (
-                                completedTasksList.map(completeTask => {
-                                    return (
-                                        <li key={completeTask.id} className="d-flex justify-content-between align-items-start">
-                                            <p><b>Task Completata: </b>{completeTask.title}</p>
-                                            <p><b>Descriszione Task: </b>{completeTask.description}</p>
-                                            <div className="buttons">
-                                                <button className="btn btn-outline-warning btn-sm me-1" onClick={() => handleUnsuccessClick(completeTask.id)}>
-                                                    <i className="bi bi-check2-square"></i>
-                                                </button>
-                                                <button className="btn btn-outline-danger btn-sm ms-1" onClick={() => handleRemoveClick(completeTask.id)}>
-                                                    <i className="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </li>
-                                    )
-                                })
-                            ) : (
-                                <li>
-                                    <p className="text-center fs-4">Nessuna task ancora completata</p>
-                                </li>
-                            )}
-                </ul>
-            </section>
+            <CompletedTasks completedTasksList={completedTasksList} handleUnsuccessClick={handleUnsuccessClick} />
         </>
     )
 
