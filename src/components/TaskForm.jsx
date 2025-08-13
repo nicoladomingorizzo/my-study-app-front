@@ -29,8 +29,8 @@ export default function TaskForm({ setTasks, apiUrl, setSuccessMessage, setEditi
                             onChange={e => setDueDate(e.target.value)} />
                     </div>
                     <div className="col-12 col-md-2 d-grid">
-                        <button className="btn btn-outline-dark bg-white text-dark p-3 w-100">
-                            <i className="bi bi-send pe-2"></i>
+                        <button className="btn btn-outline-dark bg-white text-dark p-3 flex-shrink-0 text-nowrap">
+                            <i className="bi bi-send-arrow-down pe-2"></i>
                             {editingTaskId ? 'Aggiorna' : 'Invia'}
                         </button>
                     </div>
