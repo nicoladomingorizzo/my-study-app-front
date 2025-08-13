@@ -171,7 +171,7 @@ export default function AppMain() {
                 </div>
             </div>
             <TaskForm apiUrl={apiUrl} setTasks={setTasks} setSuccessMessage={setSuccessMessage} setEditingTaskId={setEditingTaskId} editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} />
-            <CompletedTasks completedTasksList={completedTasksList} handleUnsuccessClick={handleUnsuccessClick} />
+            <CompletedTasks completedTasksList={completedTasksList} handleUnsuccessClick={handleUnsuccessClick} handleRemoveClick={handleRemoveClick} />
         </>
     )
 
