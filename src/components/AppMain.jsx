@@ -3,11 +3,15 @@ import TaskForm from "./TaskForm";
 import TaskCard from "./TaskCard";
 import SuccessMessage from "./SuccessMessage";
 import CompletedTasks from "./CompletedTasks";
+import UnsuccessMessage from "./UnsuccessMessage";
+import DeleteMessage from "./DeleteMessage";
 
 export default function AppMain() {
 
     const [tasks, setTasks] = useState([]);
+    const [unsuccessMessage, setUnsuccessMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [deleteMessage, setDeleteMessage] = useState('');
     const [editingTaskId, setEditingTaskId] = useState(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -47,6 +51,7 @@ export default function AppMain() {
                 }
             })
             .catch(err => console.error('Errore DELETE:', err));
+        setDeleteMessage('Task eliminata con successo!')
     };
 
     function handleUnsuccessClick(id) {
@@ -64,7 +69,7 @@ export default function AppMain() {
                         task.id === id ? { ...task, completed: false } : task
                     )
                 );
-                setSuccessMessage('Task riportata allo stato di non completata!');
+                setUnsuccessMessage('Task riportata allo stato di non completata!');
             })
             .catch(err => console.error('Errore nel completamento della task:', err));
     }
@@ -162,9 +167,31 @@ export default function AppMain() {
         }
     }, [successMessage]);
 
+    useEffect(() => {
+        if (unsuccessMessage) {
+            const timeout = setTimeout(() => {
+                setUnsuccessMessage('');
+            }, 3000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [unsuccessMessage]);
+
+    useEffect(() => {
+        if (deleteMessage) {
+            const timeout = setTimeout(() => {
+                setDeleteMessage('');
+            }, 3000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [deleteMessage]);
+
     return (
         <>
             <div className="container py-4">
+                <DeleteMessage deleteMessage={deleteMessage} />
+                <UnsuccessMessage unsuccessMessage={unsuccessMessage} />
                 <SuccessMessage successMessage={successMessage} />
                 <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                     <TaskCard handleRemoveClick={handleRemoveClick} handleUpdateTask={handleUpdateTask} formatItalian={formatItalian} tasks={tasks.filter(task => !task.completed)} handleSuccessClick={handleSuccessClick} />
