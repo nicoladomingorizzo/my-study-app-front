@@ -1,6 +1,8 @@
 export default function TaskCompleted({ completedTasksList, handleUnsuccessClick, handleRemoveClick }) {
     return (
-        <section className="completed container">
+
+        <>
+
             <h2 className="text-center mt-5 mb-5">Task Completate</h2>
             <ul className="list-group list-group-flush list-unstyled">
                 {
@@ -28,6 +30,7 @@ export default function TaskCompleted({ completedTasksList, handleUnsuccessClick
                             </li>
                         )}
             </ul>
-        </section>
+        </>
+
     )
 }

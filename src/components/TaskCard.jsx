@@ -2,6 +2,7 @@ export default function TaskCard({ handleRemoveClick, handleSuccessClick, handle
 
     return (
         <>
+
             {
                 tasks.length > 0 ? (tasks.map(task => {
                     return (
@@ -45,5 +46,6 @@ export default function TaskCard({ handleRemoveClick, handleSuccessClick, handle
                 )
             }
         </>
+
     )
 }
