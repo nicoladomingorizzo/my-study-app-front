@@ -1,18 +1,22 @@
-export default function TaskForm({ setTasks, apiUrl, setSuccessMessage, setEditingTaskId, editingTaskId, title, setTitle, description, setDescription, dueDate, setDueDate, handleSubmitCreate, handleSubmitUpdate }) {
+export default function TaskForm({ editingTaskId, title, setTitle, description, setDescription, dueDate, setDueDate, handleSubmitCreate, handleSubmitUpdate }) {
 
     return (
         <section className="sticky-bottom bg-white pt-3 pb-4 border-top shadow-sm bg-body-tertiary">
             <div className="container">
                 <form onSubmit={editingTaskId ? handleSubmitUpdate : handleSubmitCreate} className="row g-2">
-                    <div className="col-12 col-md-3">
+                    <div className="col-12 col-md-3 text-center">
                         <input
                             className="text-center p-3 form-control"
                             type="text"
                             value={title}
                             placeholder="Inserisci una nuova task..."
-                            onChange={e => setTitle(e.target.value)} />
+                            onChange={e => setTitle(e.target.value)}
+                            maxLength={15} />
+                        <small className="form-text text-muted">
+                            {title.length}/15 caratteri
+                        </small>
                     </div>
-                    <div className="col-12 col-md-3">
+                    <div className="col-12 col-md-3 text-center">
                         <input
                             className="text-center p-3 form-control"
                             type="text"
@@ -20,19 +24,21 @@ export default function TaskForm({ setTasks, apiUrl, setSuccessMessage, setEditi
                             placeholder="Inserisci una descrizione della task..."
                             onChange={e => setDescription(e.target.value)}
                             maxLength={50} />
-                        <small className="form-text text-muted ps-1">
+                        <small className="form-text text-muted">
                             {description.length}/50 caratteri
                         </small>
 
                     </div>
-                    <div className="col-12 col-md-3">
+                    <div className="col-12 col-md-3 text-center">
                         <input
                             className="text-center p-3 form-control"
                             type="date"
                             value={dueDate}
-                            placeholder="Inserisci una data di scadenza"
                             min={new Date().toISOString().split('T')[0]}
                             onChange={e => setDueDate(e.target.value)} />
+                        <small className="form-text text-muted">
+                            Inserisci la data di scadenza
+                        </small>
                     </div>
                     <div className="col-12 col-md-2 d-grid">
                         <button className="btn btn-outline-dark bg-white text-dark p-3 flex-shrink-0 text-nowrap">
