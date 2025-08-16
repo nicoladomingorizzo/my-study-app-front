@@ -1,4 +1,4 @@
-export default function TaskForm({ editingTaskId, title, setTitle, description, setDescription, dueDate, setDueDate, handleSubmitCreate, handleSubmitUpdate }) {
+export default function TaskForm({ editingTaskId, title, setTitle, description, setDescription, dueDate, setDueDate, handleSubmitCreate, handleSubmitUpdate, handleEraseUpdateTask }) {
 
     return (
 
@@ -40,11 +40,27 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
                         Inserisci la data di scadenza
                     </small>
                 </div>
-                <div className="col-12 col-md-2 d-grid">
-                    <button className="btn btn-outline-dark bg-white text-dark p-3 flex-shrink-0 text-nowrap">
+                {/* <div className="col-12 col-md-2 d-grid">
+                    <button className="btn btn-outline-dark  p-3 flex-shrink-0 text-nowrap">
                         <i className="bi bi-send-arrow-down pe-2"></i>
                         {editingTaskId ? 'Aggiorna' : 'Invia'}
                     </button>
+                </div> */}
+                <div className="col-4 col-md-2 d-grid">
+                    <button type="submit" className="btn btn-outline-dark mb-2">
+                        <i className="bi bi-send-arrow-down pe-2"></i>
+                        {editingTaskId ? 'Aggiorna task' : 'Aggiungi task'}
+                    </button>
+
+                    {editingTaskId && (
+                        <button
+                            type="button"
+                            className="btn btn-outline-warning"
+                            onClick={handleEraseUpdateTask}>
+                            <i className="bi bi-x-octagon pe-2"></i>
+                            Annulla modifica
+                        </button>
+                    )}
                 </div>
             </form>
         </div>

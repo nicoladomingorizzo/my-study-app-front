@@ -79,6 +79,14 @@ export default function AppMain() {
                         task.id === id ? { ...task, completed: true } : task
                     )
                 );
+                // Reset del form se la task era in editing
+                if (editingTaskId === id) {
+                    setEditingTaskId(null);
+                    setTitle('');
+                    setDescription('');
+                    setDueDate('');
+                }
+
                 setSuccessMessage('Task completata con successo!');
             })
             .catch(err => console.error('Errore nel completamento della task:', err));
@@ -111,7 +119,13 @@ export default function AppMain() {
         setDueDate(task.due_date?.split("T")[0] || ''); // Rimuove l'ora, lascia solo yyyy-mm-dd
     };
 
-    //function to fetch
+    function handleEraseUpdateTask() {
+        setEditingTaskId(null);
+        setTitle('');
+        setDescription('');
+        setDueDate('');
+    }
+
     function handleSubmitCreate(e) {
         e.preventDefault();
 
@@ -221,7 +235,7 @@ export default function AppMain() {
 
             {/* Section for TaskForm */}
             <section className="sticky-bottom bg-white pt-3 pb-4 border-top shadow-sm bg-body-tertiary">
-                <TaskForm editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} />
+                <TaskForm editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} handleEraseUpdateTask={handleEraseUpdateTask} />
             </section>
 
             {/* Section for CompletedTasks */}
