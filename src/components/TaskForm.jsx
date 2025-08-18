@@ -1,6 +1,4 @@
-import { useEffect, useRef } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Modal } from "bootstrap";  // 👈 importa la classe Modal
+import { useEffect, useState } from "react";
 
 export default function TaskForm({
     editingTaskId,
@@ -14,72 +12,58 @@ export default function TaskForm({
     handleSubmitUpdate,
     handleEraseUpdateTask,
 }) {
-    const modalRef = useRef(null);
-    const titleInputRef = useRef(null);
-    const modalInstance = useRef(null);
+    const [isOpen, setIsOpen] = useState(false);
 
-    // Inizializza istanza modale
+    // 🔹 Apri automaticamente se entra in modalità modifica
     useEffect(() => {
-        if (modalRef.current) {
-            modalInstance.current = new Modal(modalRef.current); // 👈 usa Modal importato
-            modalRef.current.addEventListener("shown.bs.modal", () => {
-                if (titleInputRef.current) {
-                    titleInputRef.current.focus();
-                }
-            });
-        }
-    }, []);
-
-    // Apri automaticamente se editingTaskId cambia
-    useEffect(() => {
-        if (editingTaskId && modalInstance.current) {
-            modalInstance.current.show();
+        if (editingTaskId) {
+            setIsOpen(true);
         }
     }, [editingTaskId]);
 
-    const closeModal = () => {
-        if (modalInstance.current) {
-            modalInstance.current.hide();
-        }
+    // 🔹 Chiudi e resetta eventuale stato
+    const handleClose = () => {
+        setIsOpen(false);
+        if (editingTaskId) handleEraseUpdateTask();
     };
 
-    const onSubmit = (e) => {
+    // 🔹 Invio form
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (editingTaskId) {
             handleSubmitUpdate(e);
         } else {
             handleSubmitCreate(e);
         }
-        closeModal();
-    };
-
-    const onCancel = () => {
-        handleEraseUpdateTask();
-        closeModal();
+        setIsOpen(false);
     };
 
     return (
         <>
+            {/* 🔘 Bottone centrato */}
             <div className="d-flex justify-content-center my-3">
                 <button
                     type="button"
                     className="btn btn-primary d-flex align-items-center gap-2"
-                    onClick={() => modalInstance.current?.show()}
+                    onClick={() => setIsOpen(true)}
                 >
                     <i className="bi bi-arrow-down-circle"></i>
                     {editingTaskId ? "Modifica Task" : "Nuova Task"}
                 </button>
             </div>
 
+            {/* 🪟 Overlay */}
+            {isOpen && <div className="modal-backdrop fade show"></div>}
+
+            {/* 🪟 Modale */}
             <div
-                className="modal fade"
-                id="taskModal"
+                className={`modal ${isOpen ? "show d-block" : ""}`}
                 tabIndex="-1"
-                aria-hidden="true"
-                ref={modalRef}
+                role="dialog"
             >
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
+                        {/* Header */}
                         <div className="modal-header">
                             <h5 className="modal-title">
                                 {editingTaskId ? "Modifica Task" : "Crea Task"}
@@ -87,16 +71,15 @@ export default function TaskForm({
                             <button
                                 type="button"
                                 className="btn-close"
-                                onClick={closeModal}
-                                aria-label="Chiudi"
+                                onClick={handleClose}
                             ></button>
                         </div>
 
+                        {/* Body */}
                         <div className="modal-body">
-                            <form onSubmit={onSubmit} className="row g-2">
+                            <form onSubmit={handleSubmit} className="row g-2">
                                 <div className="col-12 col-md-4 text-center">
                                     <input
-                                        ref={titleInputRef}
                                         className="text-center p-3 form-control"
                                         type="text"
                                         value={title}
@@ -146,7 +129,7 @@ export default function TaskForm({
                                         <button
                                             type="button"
                                             className="btn btn-outline-warning"
-                                            onClick={onCancel}
+                                            onClick={handleClose}
                                         >
                                             <i className="bi bi-x-octagon pe-2"></i>
                                             Annulla modifica
