@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { Modal } from "bootstrap";  // 👈 importa la classe Modal
 
 export default function TaskForm({
     editingTaskId,
@@ -18,12 +18,10 @@ export default function TaskForm({
     const titleInputRef = useRef(null);
     const modalInstance = useRef(null);
 
-    // Inizializza l’istanza della modale
+    // Inizializza istanza modale
     useEffect(() => {
         if (modalRef.current) {
-            modalInstance.current = new window.bootstrap.Modal(modalRef.current);
-
-            // focus automatico quando la modale è "shown"
+            modalInstance.current = new Modal(modalRef.current); // 👈 usa Modal importato
             modalRef.current.addEventListener("shown.bs.modal", () => {
                 if (titleInputRef.current) {
                     titleInputRef.current.focus();
@@ -32,21 +30,19 @@ export default function TaskForm({
         }
     }, []);
 
-    // 👉 se editingTaskId cambia e non è null → apri la modale
+    // Apri automaticamente se editingTaskId cambia
     useEffect(() => {
         if (editingTaskId && modalInstance.current) {
             modalInstance.current.show();
         }
     }, [editingTaskId]);
 
-    // 👉 funzione per chiudere la modale
     const closeModal = () => {
         if (modalInstance.current) {
             modalInstance.current.hide();
         }
     };
 
-    // 👉 submit
     const onSubmit = (e) => {
         e.preventDefault();
         if (editingTaskId) {
@@ -64,19 +60,17 @@ export default function TaskForm({
 
     return (
         <>
-            {/* 🔘 Bottone "Nuova Task" centrato */}
             <div className="d-flex justify-content-center my-3">
                 <button
                     type="button"
                     className="btn btn-primary d-flex align-items-center gap-2"
-                    onClick={() => modalInstance.current.show()}
+                    onClick={() => modalInstance.current?.show()}
                 >
                     <i className="bi bi-arrow-down-circle"></i>
                     {editingTaskId ? "Modifica Task" : "Nuova Task"}
                 </button>
             </div>
 
-            {/* 🪟 Modale */}
             <div
                 className="modal fade"
                 id="taskModal"
@@ -102,7 +96,7 @@ export default function TaskForm({
                             <form onSubmit={onSubmit} className="row g-2">
                                 <div className="col-12 col-md-4 text-center">
                                     <input
-                                        ref={titleInputRef} // 👉 focus automatico qui
+                                        ref={titleInputRef}
                                         className="text-center p-3 form-control"
                                         type="text"
                                         value={title}
