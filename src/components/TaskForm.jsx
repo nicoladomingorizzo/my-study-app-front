@@ -1,17 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function TaskForm({
-    editingTaskId,
-    title,
-    setTitle,
-    description,
-    setDescription,
-    dueDate,
-    setDueDate,
-    handleSubmitCreate,
-    handleSubmitUpdate,
-    handleEraseUpdateTask,
-}) {
+export default function TaskForm({ editingTaskId, title, setTitle, description, setDescription, dueDate, setDueDate, handleSubmitCreate, handleSubmitUpdate, handleEraseUpdateTask, }) {
     const [isOpen, setIsOpen] = useState(false);
 
     // 🔹 Apri automaticamente se entra in modalità modifica
