@@ -1,3 +1,7 @@
+import { useEffect, useRef } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 export default function TaskForm({
     editingTaskId,
     title,
@@ -10,15 +14,62 @@ export default function TaskForm({
     handleSubmitUpdate,
     handleEraseUpdateTask,
 }) {
+    const modalRef = useRef(null);
+    const titleInputRef = useRef(null);
+    const modalInstance = useRef(null);
+
+    // Inizializza l’istanza della modale
+    useEffect(() => {
+        if (modalRef.current) {
+            modalInstance.current = new window.bootstrap.Modal(modalRef.current);
+
+            // focus automatico quando la modale è "shown"
+            modalRef.current.addEventListener("shown.bs.modal", () => {
+                if (titleInputRef.current) {
+                    titleInputRef.current.focus();
+                }
+            });
+        }
+    }, []);
+
+    // 👉 se editingTaskId cambia e non è null → apri la modale
+    useEffect(() => {
+        if (editingTaskId && modalInstance.current) {
+            modalInstance.current.show();
+        }
+    }, [editingTaskId]);
+
+    // 👉 funzione per chiudere la modale
+    const closeModal = () => {
+        if (modalInstance.current) {
+            modalInstance.current.hide();
+        }
+    };
+
+    // 👉 submit
+    const onSubmit = (e) => {
+        e.preventDefault();
+        if (editingTaskId) {
+            handleSubmitUpdate(e);
+        } else {
+            handleSubmitCreate(e);
+        }
+        closeModal();
+    };
+
+    const onCancel = () => {
+        handleEraseUpdateTask();
+        closeModal();
+    };
+
     return (
         <>
-            {/* 🔘 Bottone centrato con icona */}
+            {/* 🔘 Bottone "Nuova Task" centrato */}
             <div className="d-flex justify-content-center my-3">
                 <button
                     type="button"
                     className="btn btn-primary d-flex align-items-center gap-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#taskModal"
+                    onClick={() => modalInstance.current.show()}
                 >
                     <i className="bi bi-arrow-down-circle"></i>
                     {editingTaskId ? "Modifica Task" : "Nuova Task"}
@@ -31,6 +82,7 @@ export default function TaskForm({
                 id="taskModal"
                 tabIndex="-1"
                 aria-hidden="true"
+                ref={modalRef}
             >
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
@@ -41,20 +93,16 @@ export default function TaskForm({
                             <button
                                 type="button"
                                 className="btn-close"
-                                data-bs-dismiss="modal"
+                                onClick={closeModal}
                                 aria-label="Chiudi"
                             ></button>
                         </div>
 
                         <div className="modal-body">
-                            <form
-                                onSubmit={
-                                    editingTaskId ? handleSubmitUpdate : handleSubmitCreate
-                                }
-                                className="row g-2"
-                            >
+                            <form onSubmit={onSubmit} className="row g-2">
                                 <div className="col-12 col-md-4 text-center">
                                     <input
+                                        ref={titleInputRef} // 👉 focus automatico qui
                                         className="text-center p-3 form-control"
                                         type="text"
                                         value={title}
@@ -95,11 +143,7 @@ export default function TaskForm({
                                 </div>
 
                                 <div className="col-12 d-flex justify-content-end mt-3 gap-2">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-outline-dark"
-                                        data-bs-dismiss="modal"
-                                    >
+                                    <button type="submit" className="btn btn-outline-dark">
                                         <i className="bi bi-send-arrow-down pe-2"></i>
                                         {editingTaskId ? "Aggiorna task" : "Aggiungi task"}
                                     </button>
@@ -108,8 +152,7 @@ export default function TaskForm({
                                         <button
                                             type="button"
                                             className="btn btn-outline-warning"
-                                            onClick={handleEraseUpdateTask}
-                                            data-bs-dismiss="modal"
+                                            onClick={onCancel}
                                         >
                                             <i className="bi bi-x-octagon pe-2"></i>
                                             Annulla modifica
