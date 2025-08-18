@@ -1,7 +1,3 @@
-import { useEffect, useRef } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
 export default function TaskForm({
     editingTaskId,
     title,
@@ -14,53 +10,15 @@ export default function TaskForm({
     handleSubmitUpdate,
     handleEraseUpdateTask,
 }) {
-    const modalRef = useRef(null);
-    let modalInstance = useRef(null);
-
-    useEffect(() => {
-        if (modalRef.current) {
-            // crea un'istanza della modale
-            modalInstance.current = new window.bootstrap.Modal(modalRef.current);
-        }
-    }, []);
-
-    // 👉 apri la modale automaticamente se editingTaskId è settato
-    useEffect(() => {
-        if (editingTaskId && modalInstance.current) {
-            modalInstance.current.show();
-        }
-    }, [editingTaskId]);
-
-    // 👉 funzione per chiudere la modale
-    const closeModal = () => {
-        if (modalInstance.current) {
-            modalInstance.current.hide();
-        }
-    };
-
-    const onSubmit = (e) => {
-        e.preventDefault();
-        if (editingTaskId) {
-            handleSubmitUpdate(e);
-        } else {
-            handleSubmitCreate(e);
-        }
-        closeModal(); // chiudi modale dopo submit
-    };
-
-    const onCancel = () => {
-        handleEraseUpdateTask();
-        closeModal(); // chiudi modale dopo annulla
-    };
-
     return (
         <>
-            {/* 🔘 Bottone "Nuova Task" centrato */}
+            {/* 🔘 Bottone centrato con icona */}
             <div className="d-flex justify-content-center my-3">
                 <button
                     type="button"
                     className="btn btn-primary d-flex align-items-center gap-2"
-                    onClick={() => modalInstance.current.show()}
+                    data-bs-toggle="modal"
+                    data-bs-target="#taskModal"
                 >
                     <i className="bi bi-arrow-down-circle"></i>
                     {editingTaskId ? "Modifica Task" : "Nuova Task"}
@@ -73,7 +31,6 @@ export default function TaskForm({
                 id="taskModal"
                 tabIndex="-1"
                 aria-hidden="true"
-                ref={modalRef}
             >
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
@@ -84,13 +41,18 @@ export default function TaskForm({
                             <button
                                 type="button"
                                 className="btn-close"
-                                onClick={closeModal}
+                                data-bs-dismiss="modal"
                                 aria-label="Chiudi"
                             ></button>
                         </div>
 
                         <div className="modal-body">
-                            <form onSubmit={onSubmit} className="row g-2">
+                            <form
+                                onSubmit={
+                                    editingTaskId ? handleSubmitUpdate : handleSubmitCreate
+                                }
+                                className="row g-2"
+                            >
                                 <div className="col-12 col-md-4 text-center">
                                     <input
                                         className="text-center p-3 form-control"
@@ -133,7 +95,11 @@ export default function TaskForm({
                                 </div>
 
                                 <div className="col-12 d-flex justify-content-end mt-3 gap-2">
-                                    <button type="submit" className="btn btn-outline-dark">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-outline-dark"
+                                        data-bs-dismiss="modal"
+                                    >
                                         <i className="bi bi-send-arrow-down pe-2"></i>
                                         {editingTaskId ? "Aggiorna task" : "Aggiungi task"}
                                     </button>
@@ -142,7 +108,8 @@ export default function TaskForm({
                                         <button
                                             type="button"
                                             className="btn btn-outline-warning"
-                                            onClick={onCancel}
+                                            onClick={handleEraseUpdateTask}
+                                            data-bs-dismiss="modal"
                                         >
                                             <i className="bi bi-x-octagon pe-2"></i>
                                             Annulla modifica
