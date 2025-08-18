@@ -12,15 +12,18 @@ export default function TaskForm({
 }) {
     return (
         <>
-            {/* 🔘 Bottone che apre la modale */}
-            <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#taskModal"
-            >
-                {editingTaskId ? "Modifica Task" : "Nuova Task"}
-            </button>
+            {/* 🔘 Bottone centrato con icona */}
+            <div className="d-flex justify-content-center my-3">
+                <button
+                    type="button"
+                    className="btn btn-primary d-flex align-items-center gap-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#taskModal"
+                >
+                    <i className="bi bi-arrow-down-circle"></i>
+                    {editingTaskId ? "Modifica Task" : "Nuova Task"}
+                </button>
+            </div>
 
             {/* 🪟 Modale */}
             <div
