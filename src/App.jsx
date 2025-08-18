@@ -6,8 +6,9 @@ function App() {
   return (
     <>
 
-      <AppHeader />
-      <AppMain />
+      <AppHeader editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} handleEraseUpdateTask={handleEraseUpdateTask} />
+
+      <AppMain tasks={tasks} setTasks={setTasks} editingTaskId={editingTaskId} setEditingTaskId={setEditingTaskId} setTitle={setTitle} setDescription={setDescription} setDueDate={setDueDate} />
 
     </>
   )
