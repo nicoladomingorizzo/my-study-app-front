@@ -5,6 +5,7 @@ import SuccessMessage from "./SuccessMessage";
 import TaskCard from "./TaskCard";
 import TaskForm from "./TaskForm";
 import UnsuccessMessage from "./UnsuccessMessage";
+import { supabase } from "../supabaseClient";
 
 export default function AppMain() {
 
@@ -24,18 +25,20 @@ export default function AppMain() {
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState('');
 
-    // Const to backend route
-    const apiUrl = `http://127.0.0.1:3030/api/tasks`;
-
     const completedTasksList = tasks.filter(task => task.completed);
 
     useEffect(() => {
-        fetch(apiUrl)
-            .then(res => res.json())
-            .then(data => {
+        async function fetchTasks() {
+            const { data, error } = await supabase.from("tasks").select("*").order("id", { ascending: false });
+            if (error) {
+                console.error("Errore caricamento:", error);
+            } else {
                 setTasks(data);
-            })
+            }
+        }
+        fetchTasks();
     }, []);
+
 
     // function for transform date to local (Italian) date
     function formatItalian(string) {
@@ -48,69 +51,50 @@ export default function AppMain() {
         return dateObject.toLocaleDateString("it-IT");
     };
 
-    function handleRemoveClick(id) {
-        fetch(`http://127.0.0.1:3030/api/tasks/${id}`, {
-            method: 'DELETE'
-        })
-            .then(res => {
-                if (res.status === 204) {
-                    // Rimuovi dal DOM solo se il server ha eliminato
-                    setTasks(prev => prev.filter(task => task.id !== id));
-                } else {
-                    alert('Errore durante l\'eliminazione');
-                }
-            })
-            .catch(err => console.error('Errore DELETE:', err));
-        setDeleteMessage('Task eliminata con successo!')
-    };
+    async function handleRemoveClick(id) {
+        const { error } = await supabase.from("tasks").delete().eq("id", id);
+        if (error) {
+            console.error("Errore DELETE:", error);
+        } else {
+            setTasks(prev => prev.filter(task => task.id !== id));
+            setDeleteMessage("Task eliminata con successo!");
+        }
+    }
 
-    function handleSuccessClick(id) {
-        fetch(`${apiUrl}/${id}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ completed: true })
-        })
-            .then(res => res.json())
-            .then(() => {
-                setTasks(prev =>
-                    prev.map(task =>
-                        task.id === id ? { ...task, completed: true } : task
-                    )
-                );
-                // Reset del form se la task era in editing
-                if (editingTaskId === id) {
-                    setEditingTaskId(null);
-                    setTitle('');
-                    setDescription('');
-                    setDueDate('');
-                }
+    async function handleSuccessClick(id) {
+        const { data, error } = await supabase
+            .from("tasks")
+            .update({ completed: true })
+            .eq("id", id)
+            .select();
 
-                setSuccessMessage('Task completata con successo!');
-            })
-            .catch(err => console.error('Errore nel completamento della task:', err));
-    };
+        if (error) {
+            console.error("Errore update:", error);
+        } else {
+            setTasks(prev => prev.map(task => task.id === id ? data[0] : task));
+            setEditingTaskId(null);
+            setTitle("");
+            setDescription("");
+            setDueDate("");
+            setSuccessMessage("Task completata con successo!");
+        }
+    }
 
-    function handleUnsuccessClick(id) {
-        fetch(`${apiUrl}/${id}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ completed: false })
-        })
-            .then(res => res.json())
-            .then(() => {
-                setTasks(prev =>
-                    prev.map(task =>
-                        task.id === id ? { ...task, completed: false } : task
-                    )
-                );
-                setUnsuccessMessage('Task riportata allo stato di non completata!');
-            })
-            .catch(err => console.error('Errore nel completamento della task:', err));
-    };
+    async function handleUnsuccessClick(id) {
+        const { data, error } = await supabase
+            .from("tasks")
+            .update({ completed: false })
+            .eq("id", id)
+            .select();
+
+        if (error) {
+            console.error("Errore update:", error);
+        } else {
+            setTasks(prev => prev.map(task => task.id === id ? data[0] : task));
+            setUnsuccessMessage("Task riportata a non completata!");
+        }
+    }
+
 
     function handleUpdateTask(task) {
         setEditingTaskId(task.id);
@@ -126,62 +110,59 @@ export default function AppMain() {
         setDueDate('');
     }
 
-    function handleSubmitCreate(e) {
+    async function handleSubmitCreate(e) {
         e.preventDefault();
 
         if (!title || !description || !dueDate) {
-            alert('Per favore compila tutti i campi');
+            alert("Per favore compila tutti i campi");
             return;
         }
 
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ title, description, due_date: dueDate })
-        })
-            .then(res => res.json())
-            .then(newTask => {
-                setTasks(prevTasks => [...prevTasks, newTask]);
-                setTitle('');
-                setDescription('');
-                setDueDate('');
-                setSuccessMessage('Task aggiunta con successo!');
-            })
-            .catch(error => console.error('Errore:', error));
-    };
+        const { data, error } = await supabase
+            .from("tasks")
+            .insert([{ title, description, due_date: dueDate, completed: false }])
+            .select();
 
-    function handleSubmitUpdate(e) {
+        if (error) {
+            console.error("Errore insert:", error);
+        } else {
+            setTasks(prev => [...prev, ...data]);
+            setTitle("");
+            setDescription("");
+            setDueDate("");
+            setSuccessMessage("Task aggiunta con successo!");
+        }
+    }
+
+
+    async function handleSubmitUpdate(e) {
         e.preventDefault();
 
         if (!title || !description || !dueDate) {
-            alert('Per favore compila tutti i campi');
+            alert("Per favore compila tutti i campi");
             return;
         }
 
-        fetch(`${apiUrl}/${editingTaskId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ title, description, due_date: dueDate })
-        })
-            .then(res => res.json())
-            .then(() => {
-                setTasks(prev => prev.map(task =>
-                    task.id === editingTaskId
-                        ? { ...task, title, description, due_date: dueDate }
-                        : task
-                ))
-                setTitle('');
-                setDescription('');
-                setDueDate('');
-                setEditingTaskId(null);
-                setSuccessMessage('Task modificata con successo!');
-            })
-            .catch(error => console.error('Errore:', error));
-    };
+        const { data, error } = await supabase
+            .from("tasks")
+            .update({ title, description, due_date: dueDate })
+            .eq("id", editingTaskId)
+            .select();
+
+        if (error) {
+            console.error("Errore update:", error);
+        } else {
+            setTasks(prev => prev.map(task =>
+                task.id === editingTaskId ? data[0] : task
+            ));
+            setTitle("");
+            setDescription("");
+            setDueDate("");
+            setEditingTaskId(null);
+            setSuccessMessage("Task modificata con successo!");
+        }
+    }
+
 
     //setTimeouts for alerts
     useEffect(() => {
