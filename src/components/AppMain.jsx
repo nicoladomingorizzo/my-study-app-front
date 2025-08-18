@@ -3,7 +3,6 @@ import CompletedTasks from "./CompletedTasks";
 import DeleteMessage from "./DeleteMessage";
 import SuccessMessage from "./SuccessMessage";
 import TaskCard from "./TaskCard";
-import TaskForm from "./TaskForm";
 import UnsuccessMessage from "./UnsuccessMessage";
 import { supabase } from "../supabaseClient";
 
@@ -199,27 +198,18 @@ export default function AppMain() {
         <>
 
             <div className="container py-4">
-                {/* Component for Alert Message to Delete Task */}
+                {/* Messaggi */}
                 <DeleteMessage deleteMessage={deleteMessage} />
-
-                {/* Component for Alert Message to Unsuccess Task */}
                 <UnsuccessMessage unsuccessMessage={unsuccessMessage} />
-
-                {/* Component for Alert Message to Success Task */}
                 <SuccessMessage successMessage={successMessage} />
 
-                {/* Cards Settings to row and cols */}
+                {/* Tasks da completare */}
                 <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-                    <TaskCard handleRemoveClick={handleRemoveClick} handleUpdateTask={handleUpdateTask} formatItalian={formatItalian} tasks={tasks.filter(task => !task.completed)} handleSuccessClick={handleSuccessClick} />
+                    <TaskCard handleRemoveClick={handleRemoveClick} handleUpdateTask={handleUpdateTask} formatItalian={formatItalian} tasks={tasks.filter((task) => !task.completed)} handleSuccessClick={handleSuccessClick} />
                 </div>
             </div>
 
-            {/* Section for TaskForm */}
-            <section className="sticky-bottom bg-white pt-3 pb-4 border-top shadow-sm bg-body-tertiary">
-                <TaskForm editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} handleEraseUpdateTask={handleEraseUpdateTask} />
-            </section>
-
-            {/* Section for CompletedTasks */}
+            {/* Tasks completate */}
             <section className="completed container">
                 <CompletedTasks completedTasksList={completedTasksList} handleUnsuccessClick={handleUnsuccessClick} handleRemoveClick={handleRemoveClick} />
             </section>
