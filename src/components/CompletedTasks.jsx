@@ -26,7 +26,7 @@ export default function TaskCompleted({ completedTasksList, handleUnsuccessClick
                             })
                         ) : (
                             <li>
-                                <p className="text-center fs-4">Nessuna task ancora completata</p>
+                                <p className="text-center fs-4 mb-5">Nessuna task ancora completata</p>
                             </li>
                         )}
             </ul>

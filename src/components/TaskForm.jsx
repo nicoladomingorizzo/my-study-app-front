@@ -40,12 +40,6 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
                         Inserisci la data di scadenza
                     </small>
                 </div>
-                {/* <div className="col-12 col-md-2 d-grid">
-                    <button className="btn btn-outline-dark  p-3 flex-shrink-0 text-nowrap">
-                        <i className="bi bi-send-arrow-down pe-2"></i>
-                        {editingTaskId ? 'Aggiorna' : 'Invia'}
-                    </button>
-                </div> */}
                 <div className="col-4 col-md-2 d-grid">
                     <button type="submit" className="btn btn-outline-dark mb-2">
                         <i className="bi bi-send-arrow-down pe-2"></i>
