@@ -5,7 +5,7 @@ export default function AppHeader({ editingTaskId, title, setTitle, description,
         <div className="bg-body-tertiary py-5">
             <div className="container text-center justify-content-around align-items-center d-flex ">
                 <div className="Title">
-                    <h1 className="mb-2">Tasks List</h1>
+                    <h1 className="mb-4">Tasks List</h1>
                     <p>by Nicola Rizzo</p>
                 </div>
 
