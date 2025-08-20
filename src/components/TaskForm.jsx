@@ -34,7 +34,7 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
                     type="button"
                     className="btn btn-outline-primary d-flex align-items-center gap-2"
                     onClick={() => setIsOpen(true)}>
-                    <i className="bi bi-arrow-down-circle"></i>
+                    <i class="bi bi-plus-square"></i>
                     {editingTaskId ? "Modifica Task" : "Nuova Task"}
                 </button>
             </div>
