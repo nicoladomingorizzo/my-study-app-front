@@ -41,7 +41,7 @@ export default function TaskCard({ handleRemoveClick, handleSuccessClick, handle
                     );
                 })) : (
                     <h3 className="my-5 mx-auto text-center">
-                        Nessuna Task ancora creata, creane una.
+                        Nessuna Task da completare, creane una.
                     </h3>
                 )
             }

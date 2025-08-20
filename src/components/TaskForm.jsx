@@ -33,7 +33,7 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
             <div className="d-flex justify-content-center my-3">
                 <button
                     type="button"
-                    className="btn btn-primary d-flex align-items-center gap-2"
+                    className="btn btn-outline-primary d-flex align-items-center gap-2"
                     onClick={() => setIsOpen(true)}
                 >
                     <i className="bi bi-arrow-down-circle"></i>
