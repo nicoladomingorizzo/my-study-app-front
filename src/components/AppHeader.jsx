@@ -10,7 +10,7 @@ export default function AppHeader({ editingTaskId, title, setTitle, description,
                 </div>
 
                 {/* TaskForm integrato nell'header */}
-                <div className="mt-1 taskForm">
+                <div className="taskForm">
                     <TaskForm editingTaskId={editingTaskId} title={title} setTitle={setTitle} description={description} setDescription={setDescription} dueDate={dueDate} setDueDate={setDueDate} handleSubmitCreate={handleSubmitCreate} handleSubmitUpdate={handleSubmitUpdate} handleEraseUpdateTask={handleEraseUpdateTask} />
                 </div>
             </div>
