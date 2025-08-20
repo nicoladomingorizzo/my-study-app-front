@@ -1,5 +1,11 @@
 export default function TaskCard({ handleRemoveClick, handleSuccessClick, handleUpdateTask, formatItalian, tasks }) {
 
+    const confirmAndRemove = (id) => {
+        if (window.confirm("Sei sicuro di voler eliminare questa task?")) {
+            handleRemoveClick(id);
+        }
+    };
+
     return (
         <>
 
@@ -32,7 +38,7 @@ export default function TaskCard({ handleRemoveClick, handleSuccessClick, handle
                                     <button className="btn btn-outline-success btn-sm" onClick={() => handleSuccessClick(task.id)}>
                                         <i className="bi bi-check2-square"></i>
                                     </button>
-                                    <button className="btn btn-outline-danger btn-sm" onClick={() => handleRemoveClick(task.id)}>
+                                    <button className="btn btn-outline-danger btn-sm" onClick={() => confirmAndRemove(task.id)}>
                                         <i className="bi bi-trash"></i>
                                     </button>
                                 </div>
