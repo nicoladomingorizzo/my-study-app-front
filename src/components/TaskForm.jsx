@@ -29,13 +29,11 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
 
     return (
         <>
-            {/* 🔘 Bottone centrato */}
             <div className="d-flex justify-content-center my-3">
                 <button
                     type="button"
                     className="btn btn-outline-primary d-flex align-items-center gap-2"
-                    onClick={() => setIsOpen(true)}
-                >
+                    onClick={() => setIsOpen(true)}>
                     <i className="bi bi-arrow-down-circle"></i>
                     {editingTaskId ? "Modifica Task" : "Nuova Task"}
                 </button>
@@ -48,8 +46,7 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
             <div
                 className={`modal ${isOpen ? "show d-block" : ""}`}
                 tabIndex="-1"
-                role="dialog"
-            >
+                role="dialog">
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         {/* Header */}
@@ -74,8 +71,7 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
                                         value={title}
                                         placeholder="Inserisci una nuova task..."
                                         onChange={(e) => setTitle(e.target.value)}
-                                        maxLength={15}
-                                    />
+                                        maxLength={15} />
                                     <small className="form-text text-muted">
                                         {title.length}/15 caratteri
                                     </small>
@@ -88,8 +84,7 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
                                         value={description}
                                         placeholder="Inserisci una descrizione..."
                                         onChange={(e) => setDescription(e.target.value)}
-                                        maxLength={50}
-                                    />
+                                        maxLength={50} />
                                     <small className="form-text text-muted">
                                         {description.length}/50 caratteri
                                     </small>
@@ -101,8 +96,7 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
                                         type="date"
                                         value={dueDate}
                                         min={new Date().toISOString().split("T")[0]}
-                                        onChange={(e) => setDueDate(e.target.value)}
-                                    />
+                                        onChange={(e) => setDueDate(e.target.value)} />
                                     <small className="form-text text-muted">
                                         Inserisci la data di scadenza
                                     </small>
@@ -118,8 +112,7 @@ export default function TaskForm({ editingTaskId, title, setTitle, description, 
                                         <button
                                             type="button"
                                             className="btn btn-outline-warning"
-                                            onClick={handleClose}
-                                        >
+                                            onClick={handleClose}>
                                             <i className="bi bi-x-octagon pe-2"></i>
                                             Annulla modifica
                                         </button>
