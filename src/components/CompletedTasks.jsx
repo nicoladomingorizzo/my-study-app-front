@@ -10,7 +10,7 @@ export default function TaskCompleted({ completedTasksList, handleUnsuccessClick
                         (
                             completedTasksList.map(completeTask => {
                                 return (
-                                    <li key={completeTask.id} className="d-flex justify-content-between align-items-start">
+                                    <li key={completeTask.id} className="d-flex justify-content-between align-items-center">
                                         <p className="mb-1"><b>Task</b><br />{completeTask.title}</p>
                                         <p><b>Descrizione</b><br />{completeTask.description}</p>
                                         <div className="buttons d-flex">
