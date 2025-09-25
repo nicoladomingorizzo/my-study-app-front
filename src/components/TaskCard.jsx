@@ -1,14 +1,34 @@
+import React, { useState } from 'react';
+import ConfirmationModal from './ConfirmationModal';
+
 export default function TaskCard({ handleRemoveClick, handleSuccessClick, handleUpdateTask, formatItalian, tasks }) {
 
-    const confirmAndRemove = (id) => {
-        if (window.confirm("Sei sicuro di voler eliminare questa task?")) {
-            handleRemoveClick(id);
+    // Stato per la modale di conferma
+    const [showModal, setShowModal] = useState(false);
+    const [taskToDeleteId, setTaskToDeleteId] = useState(null);
+
+    // Funzione per aprire la modale
+    const openConfirmModal = (id) => {
+        setTaskToDeleteId(id);
+        setShowModal(true);
+    };
+
+    // Funzione per chiudere la modale e resettare lo stato
+    const closeConfirmModal = () => {
+        setShowModal(false);
+        setTaskToDeleteId(null);
+    };
+
+    // Funzione per confermare l'eliminazione
+    const confirmAndRemove = () => {
+        if (taskToDeleteId) {
+            handleRemoveClick(taskToDeleteId);
+            closeConfirmModal();
         }
     };
 
     return (
         <>
-
             {
                 tasks.length > 0 ? (tasks.map(task => {
                     return (
@@ -38,7 +58,7 @@ export default function TaskCard({ handleRemoveClick, handleSuccessClick, handle
                                     <button className="btn btn-outline-success btn-sm" onClick={() => handleSuccessClick(task.id)}>
                                         <i className="bi bi-check2-square"></i>
                                     </button>
-                                    <button className="btn btn-outline-danger btn-sm" onClick={() => confirmAndRemove(task.id)}>
+                                    <button className="btn btn-outline-danger btn-sm" onClick={() => openConfirmModal(task.id)}>
                                         <i className="bi bi-trash"></i>
                                     </button>
                                 </div>
@@ -51,7 +71,13 @@ export default function TaskCard({ handleRemoveClick, handleSuccessClick, handle
                     </h3>
                 )
             }
-        </>
 
+            {/* Inserisci il componente modale alla fine */}
+            <ConfirmationModal
+                show={showModal}
+                onClose={closeConfirmModal}
+                onConfirm={confirmAndRemove}
+            />
+        </>
     )
 }
