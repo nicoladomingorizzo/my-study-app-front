@@ -12,7 +12,7 @@ export default function TaskCompleted({ completedTasksList, handleUnsuccessClick
                                 return (
                                     <li key={completeTask.id} className="d-flex justify-content-between align-items-start">
                                         <p className="mb-1"><b>Task Completata </b>{completeTask.title}</p>
-                                        <p><b>Descriszione Task </b>{completeTask.description}</p>
+                                        <p><b>Descrizione </b>{completeTask.description}</p>
                                         <div className="buttons d-flex">
                                             <button className="btn btn-outline-warning btn-sm me-2" onClick={() => handleUnsuccessClick(completeTask.id)}>
                                                 <i className="bi bi-check2-square"></i>
