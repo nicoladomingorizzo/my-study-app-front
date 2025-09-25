@@ -26,19 +26,19 @@ export default function ConfirmationModal({ show, onClose, onConfirm }) {
                         ></button>
                     </div>
                     <div className="modal-body">
-                        <p>Sei sicuro di voler **eliminare definitivamente** questa task? L'azione è irreversibile.</p>
+                        <p>Sei sicuro di voler <b>eliminare definitivamente</b> questa task? L'azione è irreversibile.</p>
                     </div>
                     <div className="modal-footer">
                         <button
                             type="button"
-                            className="btn btn-secondary"
+                            className="btn btn-outline-warning"
                             onClick={onClose}
                         >
                             Annulla
                         </button>
                         <button
                             type="button"
-                            className="btn btn-danger"
+                            className="btn btn-outline-danger"
                             onClick={onConfirm}
                         >
                             <i className="bi bi-trash me-2"></i> Elimina
